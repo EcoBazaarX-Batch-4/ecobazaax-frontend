@@ -169,6 +169,3 @@ export default api;
 - `GET /api/v1/seller/orders` — seller-specific orders listing.
 - `GET /api/v1/homepage-banners` — if a CMS-managed homepage required.
 - `POST /api/v1/ai/chat` — AI chat endpoint contract for future Sub-App 5.
-
----
-Use this file as the canonical API contract for frontend developers implementing the `services` layer and for backend teams to verify request/response shapes.
