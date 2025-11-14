@@ -92,12 +92,3 @@ src/
   assets/
   main.jsx
   App.jsx
-```
-
-## Deliverables for Phase 1 (Public Storefront)
-- Header, Footer, PublicLayout
-- HomePage, ProductListPage, ProductDetailPage, SearchPage
-- ProductCard component, Recommendation widgets
-
----
-End of frontend design document.
