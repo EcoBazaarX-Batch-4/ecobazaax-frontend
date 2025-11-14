@@ -77,9 +77,3 @@ This document maps backend modules and endpoints to the frontend pages and featu
 
 - AI Co-Pilot (future)
   - Overlay/Sidebar accessible across the app; no dedicated pages required by default.
-
-## Milestones & Acceptance Criteria
-- Phase 1 complete when: Header/Footer, Home, Product Listing, Product Detail, Search and Login/Register are implemented and connected to the API (mock or real), and manual QA shows browsing, searching, and product detail work end-to-end.
-
----
-This features document is the developer checklist for building each page and connecting the correct backend endpoints.
