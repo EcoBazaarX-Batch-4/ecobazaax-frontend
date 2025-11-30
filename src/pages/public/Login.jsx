@@ -57,7 +57,15 @@ const Login = () => {
     <Container maxWidth="sm" sx={{ py: 8 }}>
       <Paper elevation={3} sx={{ p: 4 }}>
         <Box display="flex" flexDirection="column" alignItems="center" mb={3}>
-          <Park sx={{ fontSize: 48, color: "primary.main", mb: 2 }} />
+          <img
+          src="/logo.jpg"   // ← put your image inside public folder
+          alt="Eco Bazaar X"
+          style={{
+            width: 32,
+            height: 32,
+            objectFit: "contain",
+          }}
+        />
           <Typography variant="h4" fontWeight={700} gutterBottom>
             Welcome Back
           </Typography>

@@ -5,6 +5,7 @@ import {
 import { EmojiEvents, Park } from "@mui/icons-material";
 import { productService } from "../../services/productService";
 
+
 const Leaderboard = () => {
   const [leaderboard, setLeaderboard] = useState([]);
   const [loading, setLoading] = useState(true);

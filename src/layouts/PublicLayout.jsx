@@ -11,8 +11,8 @@ const PublicLayout = () => {
       <Box component="main" flexGrow={1}>
         <Outlet />
       </Box>
-      <Footer />
       <ChatButton />
+      <Footer />
     </Box>
   );
 };

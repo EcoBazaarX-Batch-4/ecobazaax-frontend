@@ -21,7 +21,6 @@ import {
   Person,
   Dashboard,
   Logout,
-  Park,
 } from "@mui/icons-material";
 import { useAuth } from "../contexts/AuthContext";
 import { useCart } from "../contexts/CartContext";
@@ -36,7 +35,6 @@ const Header = () => {
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      // Correctly encode the query to handle spaces
       navigate(`/products/search?q=${encodeURIComponent(searchQuery)}`);
     }
   };
@@ -64,13 +62,33 @@ const Header = () => {
   return (
     <AppBar position="sticky" sx={{ bgcolor: "white", boxShadow: 1 }}>
       <Toolbar>
-        <Box display="flex" alignItems="center" gap={1} sx={{ cursor: "pointer" }} onClick={() => navigate("/")}>
-          <Park sx={{ color: "primary.main", fontSize: 32 }} />
-          <Typography variant="h6" component="div" color="primary" fontWeight={700} sx={{ flexGrow: 0 }}>
+        {/* Logo + Title */}
+        <Box
+          display="flex"
+          alignItems="center"
+          gap={1}
+          sx={{ cursor: "pointer" }}
+          onClick={() => navigate("/")}
+        >
+          {/* Replaced Spa Icon with Image */}
+          <img
+            src="/logo.jpg"
+            alt="Eco Bazaar X"
+            style={{ width: 32, height: 32, objectFit: "contain" }}
+          />
+
+          <Typography
+            variant="h6"
+            component="div"
+            color="primary"
+            fontWeight={700}
+            sx={{ flexGrow: 0 }}
+          >
             Eco Bazaar X
           </Typography>
         </Box>
 
+        {/* Search Bar */}
         <Box
           component="form"
           onSubmit={handleSearch}
@@ -78,16 +96,21 @@ const Header = () => {
             position: "relative",
             borderRadius: 2,
             backgroundColor: alpha("#2ECC71", 0.05),
-            "&:hover": {
-              backgroundColor: alpha("#2ECC71", 0.1),
-            },
+            "&:hover": { backgroundColor: alpha("#2ECC71", 0.1) },
             ml: 40,
             flexGrow: 1,
             maxWidth: 600,
             display: { xs: "none", md: "flex" },
           }}
         >
-          <Box sx={{ padding: "0 16px", height: "100%", display: "flex", alignItems: "center" }}>
+          <Box
+            sx={{
+              padding: "0 16px",
+              height: "100%",
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
             <SearchIcon sx={{ color: "text.secondary" }} />
           </Box>
           <InputBase
@@ -97,15 +120,14 @@ const Header = () => {
             sx={{
               color: "text.primary",
               width: "100%",
-              "& .MuiInputBase-input": {
-                padding: "10px 10px 10px 0",
-              },
+              "& .MuiInputBase-input": { padding: "10px 10px 10px 0" },
             }}
           />
         </Box>
 
         <Box sx={{ flexGrow: 1 }} />
 
+        {/* Right Side Buttons */}
         <Box display="flex" alignItems="center" gap={2}>
           <Button
             color="inherit"
@@ -116,7 +138,7 @@ const Header = () => {
             Products
           </Button>
 
-          {/* Show Cart icon only for Customers */}
+          {/* Cart for Customer Only */}
           {isAuthenticated && hasRole("ROLE_CUSTOMER") && (
             <IconButton color="inherit" onClick={() => navigate("/cart")}>
               <Badge badgeContent={getCartItemCount()} color="primary">
@@ -124,7 +146,8 @@ const Header = () => {
               </Badge>
             </IconButton>
           )}
- 
+
+          {/* Profile / Login */}
           {isAuthenticated ? (
             <>
               <IconButton onClick={handleProfileMenuOpen}>
@@ -132,7 +155,12 @@ const Header = () => {
                   {user?.name?.charAt(0).toUpperCase() || "U"}
                 </Avatar>
               </IconButton>
-              <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleProfileMenuClose}>
+
+              <Menu
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={handleProfileMenuClose}
+              >
                 <MenuItem
                   onClick={() => {
                     navigate(getDashboardPath());
@@ -144,6 +172,7 @@ const Header = () => {
                   </ListItemIcon>
                   Dashboard
                 </MenuItem>
+
                 <MenuItem onClick={handleLogout}>
                   <ListItemIcon>
                     <Logout fontSize="small" />
@@ -163,6 +192,7 @@ const Header = () => {
               >
                 Login
               </Button>
+
               <Button
                 variant="contained"
                 color="primary"

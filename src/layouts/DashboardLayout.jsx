@@ -36,7 +36,6 @@ import {
   Security,
 } from "@mui/icons-material";
 import { useAuth } from "../contexts/AuthContext";
-import ChatButton from "../components/ChatButton";
 
 const drawerWidth = 260;
 
@@ -210,7 +209,6 @@ const DashboardLayout = ({ type }) => {
       >
         <Outlet />
       </Box>
-      <ChatButton />
     </Box>
   );
 };

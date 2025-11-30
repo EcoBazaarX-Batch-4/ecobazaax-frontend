@@ -13,6 +13,8 @@ import { ArrowForward, Park, LocalShipping, Verified } from "@mui/icons-material
 import { productService } from "../../services/productService";
 import ProductGrid from "../../components/ProductGrid";
 
+
+
 const Home = () => {
   const navigate = useNavigate();
   // Store the full recommendations object
@@ -173,7 +175,9 @@ const Home = () => {
         </>
       )}
     </Box>
+    
   );
+  
 };
 
 export default Home;
