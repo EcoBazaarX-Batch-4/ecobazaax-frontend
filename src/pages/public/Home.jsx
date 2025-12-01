@@ -140,7 +140,7 @@ const Home = () => {
 <Grid item xs={6} md={5} display="flex" justifyContent="center">
   <Box
     component="img"
-    src="../../public/logo.png"
+    src="/logo.png"
     alt="Eco Product"
     sx={{
       width: "100%",
