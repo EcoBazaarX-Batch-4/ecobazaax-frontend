@@ -9,8 +9,10 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { Send, Close } from "@mui/icons-material";
+import { useAuth } from "../contexts/AuthContext"; // <-- Added Auth Hook
 
 const ChatModal = ({ open, onClose }) => {
+  const { user } = useAuth(); // <-- Get user info
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -39,9 +41,13 @@ const ChatModal = ({ open, onClose }) => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: token ? `Bearer ${token}` : "",
         },
-        body: JSON.stringify({ message: input }),
+        // FIX: Send token and user_id in BODY to match new Python Backend
+        body: JSON.stringify({ 
+            message: input,
+            user_id: user?.id || "guest",
+            jwt_token: token 
+        }),
       });
 
       const data = await response.json();
@@ -98,7 +104,7 @@ const ChatModal = ({ open, onClose }) => {
           alignItems: "center",
         }}
       >
-        <Typography fontWeight={600}>Chat Assistant</Typography>
+        <Typography fontWeight={600}>Eco-Concierge</Typography>
         <IconButton onClick={onClose} sx={{ color: "white" }}>
           <Close />
         </IconButton>
