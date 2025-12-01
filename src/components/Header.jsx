@@ -74,7 +74,7 @@ const Header = () => {
           <img
             src="/logo.png"
             alt="Eco Bazaar X"
-            style={{ width: 40, height: 40, objectFit: "contain" }}
+            style={{ width: 52, objectFit: "contain" }}
           />
 
           <Typography

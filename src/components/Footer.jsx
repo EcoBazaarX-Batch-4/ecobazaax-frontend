@@ -1,5 +1,5 @@
 import { Box, Container, Grid, Typography, Link, IconButton } from "@mui/material";
-import { Facebook, Twitter, Instagram, LinkedIn, Park } from "@mui/icons-material";
+import { Facebook, Twitter, Instagram, LinkedIn } from "@mui/icons-material";
 
 const Footer = () => {
   return (
@@ -17,7 +17,7 @@ const Footer = () => {
         <Grid container spacing={4}>
           <Grid item xs={12} sm={4}>
             <Box display="flex" alignItems="center" gap={1} mb={2}>
-              <Park sx={{ color: "primary.main", fontSize: 32 }} />
+              <img src="/logo.png" alt="Eco Bazaar X" style={{ width: 72, height: "auto" }} />
               <Typography variant="h6" color="primary" fontWeight={700}>
                 Eco Bazaar X
               </Typography>

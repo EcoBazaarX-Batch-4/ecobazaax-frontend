@@ -1,5 +1,4 @@
-import { Chip } from "@mui/material";
-import { Park } from "@mui/icons-material";
+import { Chip, Box } from "@mui/material";
 
 const CarbonBadge = ({ carbonFootprint, size = "medium" }) => {
   const getCarbonLevel = (value) => {
@@ -12,7 +11,7 @@ const CarbonBadge = ({ carbonFootprint, size = "medium" }) => {
 
   return (
     <Chip
-      icon={<Park />}
+      icon={<Box component="img" src="/logo.png" alt="carbon" sx={{ width: 72, height: "auto" }} />}
       label={`${carbonFootprint}kg CO₂ - ${label}`}
       color={color}
       size={size}
