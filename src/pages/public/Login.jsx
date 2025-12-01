@@ -58,7 +58,7 @@ const Login = () => {
       <Paper elevation={3} sx={{ p: 4 }}>
         <Box display="flex" flexDirection="column" alignItems="center" mb={3}>
           <img
-          src="/logo.jpg"   // ← put your image inside public folder
+          src="/logo.png"   // ← put your image inside public folder
           alt="Eco Bazaar X"
           style={{
             width: 32,
