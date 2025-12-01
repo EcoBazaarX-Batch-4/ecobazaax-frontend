@@ -72,9 +72,9 @@ const Header = () => {
         >
           {/* Replaced Spa Icon with Image */}
           <img
-            src="/logo.jpg"
+            src="/logo.png"
             alt="Eco Bazaar X"
-            style={{ width: 32, height: 32, objectFit: "contain" }}
+            style={{ width: 52, objectFit: "contain" }}
           />
 
           <Typography

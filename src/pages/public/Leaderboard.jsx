@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import {
   Container, Box, Typography, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Avatar, Chip, Skeleton, Alert,
 } from "@mui/material";
-import { EmojiEvents, Park } from "@mui/icons-material";
+import { EmojiEvents } from "@mui/icons-material";
 import { productService } from "../../services/productService";
 
 
@@ -95,7 +95,7 @@ const Leaderboard = () => {
                     </TableCell>
                     <TableCell align="right">
                       <Box display="flex" alignItems="center" justifyContent="flex-end" gap={0.5}>
-                        <Park sx={{ color: "success.main", fontSize: 20 }} />
+                        <img src="/logo.png" alt="carbon" style={{ color: "success.main", fontSize: 20, width: 72, height: "auto" }} />
                         {/* FIX: Use 'averageCarbonFootprint' */}
                         <Typography fontWeight={600}>
                           {user.averageCarbonFootprint?.toFixed(2)} kg

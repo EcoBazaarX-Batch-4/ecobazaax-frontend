@@ -7,7 +7,7 @@ import {
   Box,
   IconButton,
 } from "@mui/material";
-import { Favorite, FavoriteBorder, Park } from "@mui/icons-material";
+import { Favorite, FavoriteBorder } from "@mui/icons-material";
 
 const ProductCard = ({ product, onWishlistToggle }) => {
   const navigate = useNavigate();
@@ -127,7 +127,7 @@ const ProductCard = ({ product, onWishlistToggle }) => {
               border: "1px solid #c8e6c9"
             }}
           >
-            <Park sx={{ fontSize: 14, mr: 0.5 }} />
+            <img src="/logo.png" alt="carbon" style={{ fontSize: 14, marginRight: 4, width: 72, height: "auto" }} />
             {carbonValue} kg CO₂e
           </Box>
         )}

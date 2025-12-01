@@ -100,12 +100,21 @@ const ChatModal = ({ open, onClose }) => {
           bgcolor: "primary.main",
           color: "white",
           display: "flex",
-          justifyContent: "space-between",
+          justifyContent: "center",
           alignItems: "center",
+          position: "relative",
         }}
       >
-        <Typography fontWeight={600}>Eco-Concierge</Typography>
-        <IconButton onClick={onClose} sx={{ color: "white" }}>
+        <Typography fontWeight={700} sx={{ fontSize: 20 }}>EcoBazaarX AI Assistence</Typography>
+        <IconButton
+          onClick={onClose}
+          sx={{
+            color: "white",
+            position: "absolute",
+            right: 0,
+            top: 0,
+          }}
+        >
           <Close />
         </IconButton>
       </Box>

@@ -15,7 +15,7 @@ import {
   Avatar,
   IconButton
 } from "@mui/material";
-import { ShoppingCart, ArrowBack, FavoriteBorder, Favorite, Park } from "@mui/icons-material";
+import { ShoppingCart, ArrowBack, FavoriteBorder, Favorite } from "@mui/icons-material";
 import { productService } from "../../services/productService";
 import { customerService } from "../../services/customerService"; // Ensure this is imported
 import { useCart } from "../../contexts/CartContext";
@@ -209,7 +209,7 @@ const ProductDetail = () => {
                     fontWeight: 600,
                   }}
                 >
-                  <Park sx={{ fontSize: 18, mr: 1 }} />
+                  <img src="/logo.png" alt="eco-impact" style={{ fontSize: 18, marginRight: 8, width: 72, height: "auto" }} />
                   Eco-Impact: {carbonValue} kg CO₂e
                 </Box>
               </Box>

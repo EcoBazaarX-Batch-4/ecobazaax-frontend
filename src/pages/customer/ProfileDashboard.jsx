@@ -3,7 +3,7 @@ import {
   Grid, Box, Typography, Paper, Skeleton, Alert, Chip, Divider, Button 
 } from "@mui/material";
 import { 
-  Receipt, Park, TrendingUp, LocalShipping, 
+  Receipt, TrendingUp, LocalShipping, 
   Store, HourglassEmpty, CheckCircle, Cancel,
   AccountBalanceWallet, ContentCopy
 } from "@mui/icons-material";
@@ -176,7 +176,7 @@ const ProfileDashboard = () => {
           <StatCard
             title="Eco Points"
             value={insights?.currentEcoPoints || user?.ecoPoints || 0}
-            icon={<Park sx={{ fontSize: 32 }} />}
+            icon={<img src="/logo.png" alt="eco-points" style={{ width: 72, height: "auto" }} />}
             color="primary"
           />
         </Grid>
