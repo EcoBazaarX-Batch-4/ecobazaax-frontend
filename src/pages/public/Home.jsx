@@ -9,11 +9,7 @@ import {
   Skeleton,
   Alert,
 } from "@mui/material";
-<<<<<<< HEAD
-import { ArrowForward, Park, LocalShipping, Verified } from "@mui/icons-material";
-=======
 import { ArrowForward, LocalShipping, Verified } from "@mui/icons-material";
->>>>>>> c413cbcfddbf734899d99aa808dd446d327fd9fa
 import { productService } from "../../services/productService";
 import ProductGrid from "../../components/ProductGrid";
 
@@ -144,11 +140,7 @@ const Home = () => {
 <Grid item xs={6} md={5} display="flex" justifyContent="center">
   <Box
     component="img"
-<<<<<<< HEAD
-    src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=800&h=600&fit=crop"
-=======
     src="../../public/logo.png"
->>>>>>> c413cbcfddbf734899d99aa808dd446d327fd9fa
     alt="Eco Product"
     sx={{
       width: "100%",
