@@ -23,7 +23,7 @@ import { useAuth } from "../../contexts/AuthContext";
 
 import ProductGrid from "../../components/ProductGrid";
 
-// ✅ Correct toast import
+// ✅ Toast
 import { toast } from "@/hooks/use-toast";
 
 const ProductDetail = () => {
@@ -35,6 +35,7 @@ const ProductDetail = () => {
   const [product, setProduct] = useState(null);
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [reviews, setReviews] = useState([]);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -43,7 +44,9 @@ const ProductDetail = () => {
   const [reviewRating, setReviewRating] = useState(5);
   const [inWishlist, setInWishlist] = useState(false);
 
-  // Cleaner showToast wrapper
+  // ⭐ NEW: Track if user purchased this product
+  const [hasPurchased, setHasPurchased] = useState(true);
+
   const showToast = (msg, type = "success") => {
     toast({
       title: msg,
@@ -70,9 +73,11 @@ const ProductDetail = () => {
       setRelatedProducts(relatedData.products || relatedData || []);
       setReviews(reviewData.content || reviewData.reviews || []);
 
+      // ⭐ NEW — Backend should send hasPurchased flag
+      setHasPurchased(productData.hasPurchased ?? true);
+
       if (productData.inWishlist) setInWishlist(true);
 
-      // tracking (ignore failure)
       productService.trackView(id).catch(() => {});
     } catch (err) {
       setError("Failed to load product details");
@@ -81,9 +86,7 @@ const ProductDetail = () => {
     }
   };
 
-  // -------------------------
-  // Add to Cart
-  // -------------------------
+  // ⭐ ADD TO CART
   const handleAddToCart = async () => {
     if (!isAuthenticated) return navigate("/login");
 
@@ -94,32 +97,34 @@ const ProductDetail = () => {
 
     try {
       await addToCart({ productId: Number(id), quantity: Number(quantity) });
-      showToast("Added to cart successfully!", "success");
+      showToast("Added to cart successfully!");
     } catch (err) {
       showToast("Failed to add product!", "error");
     }
   };
 
-  // -------------------------
-  // Wishlist
-  // -------------------------
+  // ⭐ WISHLIST
   const handleAddToWishlist = async () => {
     if (!isAuthenticated) return navigate("/login");
 
     try {
       await customerService.addToWishlist(id);
       setInWishlist(true);
-      showToast("Added to Wishlist!", "success");
+      showToast("Added to Wishlist!");
     } catch (err) {
       showToast("Could not add to wishlist.", "error");
     }
   };
 
-  // -------------------------
-  // Review Submission
-  // -------------------------
+  // ⭐ REVIEW SUBMISSION — with purchase check
   const handleSubmitReview = async () => {
     if (!isAuthenticated) return navigate("/login");
+
+    // 🚫 USER MUST BUY PRODUCT BEFORE WRITING A REVIEW
+    if (!hasPurchased) {
+      showToast("You must purchase this product before writing a review.", "error");
+      return;
+    }
 
     try {
       await productService.addReview(id, {
@@ -131,15 +136,12 @@ const ProductDetail = () => {
       setReviewRating(5);
       loadProductData();
 
-      showToast("Review submitted!", "success");
+      showToast("Review submitted!");
     } catch (err) {
       showToast("Failed to submit review.", "error");
     }
   };
 
-  // -------------------------
-  // Loading State
-  // -------------------------
   if (loading)
     return (
       <Container sx={{ py: 6 }}>
@@ -158,7 +160,6 @@ const ProductDetail = () => {
 
   return (
     <Container maxWidth="lg" sx={{ py: 6 }}>
-      {/* BACK BUTTON */}
       <Button startIcon={<ArrowBack />} onClick={() => navigate(-1)} sx={{ mb: 4 }}>
         Back to Shopping
       </Button>
@@ -213,7 +214,7 @@ const ProductDetail = () => {
               )}
             </Box>
 
-            {/* CARBON FOOTPRINT */}
+            {/* CARBON BADGE */}
             {carbonValue && (
               <Box mt={2}>
                 <Box
@@ -235,12 +236,11 @@ const ProductDetail = () => {
 
             <Divider sx={{ my: 3 }} />
 
-            {/* DESCRIPTION */}
             <Typography color="text.secondary">{product.description}</Typography>
 
             <Box flexGrow={1} />
 
-            {/* ADD TO CART + WISHLIST */}
+            {/* ADD TO CART */}
             <Box display="flex" gap={2} alignItems="center" mt={3}>
               <TextField
                 type="number"

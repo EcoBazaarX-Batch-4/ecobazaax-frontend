@@ -18,6 +18,7 @@ import {
 import { Park, LocalOffer } from "@mui/icons-material";
 import { useAuth } from "../../contexts/AuthContext";
 import { sellerService } from "../../services/sellerService";
+import { toast } from "@/hooks/use-toast";  // ✅ Add toast
 
 const Register = () => {
   const navigate = useNavigate();
@@ -44,54 +45,69 @@ const Register = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError(null);
+  e.preventDefault();
+  setError(null);
 
-    if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match");
-      return;
-    }
+  if (formData.password !== formData.confirmPassword) {
+    setError("Passwords do not match");
+    return;
+  }
 
-    if (formData.role === "ROLE_SELLER" && !formData.storeName) {
-      setError("Store Name is required for seller registration");
-      return;
-    }
+  if (formData.role === "ROLE_SELLER" && !formData.storeName) {
+    setError("Store Name is required for seller registration");
+    return;
+  }
 
-    setLoading(true);
+  setLoading(true);
 
-    try {
-      // 2. Pass referralCode to the register function
-      await register({
-        name: formData.name,
-        email: formData.email,
-        password: formData.password,
-        roles: ["ROLE_CUSTOMER"], 
-        referralCode: formData.referralCode || null, // Send to backend
-      });
+  try {
+    await register({
+      name: formData.name,
+      email: formData.email,
+      password: formData.password,
+      roles: ["ROLE_CUSTOMER"],
+      referralCode: formData.referralCode || null,
+    });
 
-      if (formData.role === "ROLE_SELLER") {
-        try {
-          await sellerService.applyToBeSeller({
-            storeName: formData.storeName,
-            businessDetails: formData.storeDescription, 
-          });
-          alert("Account created! Your seller application has been submitted and is pending approval.");
-        } catch (sellerErr) {
-          console.error("Seller application failed:", sellerErr);
-          alert("Account created, but we couldn't submit your seller application. Please apply from your profile.");
-        }
-      } else {
-        alert("Account created successfully!");
+    // SELLER REGISTRATION FLOW
+    if (formData.role === "ROLE_SELLER") {
+      try {
+        await sellerService.applyToBeSeller({
+          storeName: formData.storeName,
+          businessDetails: formData.storeDescription,
+        });
+
+        toast({
+          title: "Account Created!",
+          description: "Your seller application has been submitted and is under review.",
+        });
+
+      } catch (sellerErr) {
+        console.error("Seller application failed:", sellerErr);
+
+        toast({
+          title: "Account Created",
+          description: "We could not submit your seller application. Please apply again from your profile.",
+          variant: "destructive",
+        });
       }
 
-      navigate("/");
-      
-    } catch (err) {
-      setError(err.response?.data?.message || "Registration failed. Please try again.");
-    } finally {
-      setLoading(false);
+    } else {
+      toast({
+        title: "Welcome to EcoBazaarX!",
+        description: "Your account has been created successfully.",
+      });
     }
-  };
+
+    navigate("/");
+
+  } catch (err) {
+    setError(err.response?.data?.message || "Registration failed. Please try again.");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <Container maxWidth="sm" sx={{ py: 8 }}>

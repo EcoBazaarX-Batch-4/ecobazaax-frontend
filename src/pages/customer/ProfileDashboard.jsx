@@ -11,6 +11,8 @@ import { customerService } from "../../services/customerService";
 import { sellerService } from "../../services/sellerService";
 import { useAuth } from "../../contexts/AuthContext"; // <-- Import AuthContext
 import StatCard from "../../components/StatCard";
+import { toast } from "@/hooks/use-toast";   // ✅ ADD THIS
+
 
 const ProfileDashboard = () => {
   const { user } = useAuth(); // Get logged-in user details
@@ -50,12 +52,17 @@ const ProfileDashboard = () => {
     }
   };
 
-  const copyReferral = () => {
-    if (user?.referralCode) {
-      navigator.clipboard.writeText(user.referralCode);
-      alert("Referral code copied!");
-    }
-  };
+ const copyReferral = () => {
+  if (user?.referralCode) {
+    navigator.clipboard.writeText(user.referralCode);
+    
+    toast({
+      title: "Referral Code Copied!",
+      description: "You can now share it with your friends.",
+    });
+  }
+};
+
 
   if (loading) {
     return (

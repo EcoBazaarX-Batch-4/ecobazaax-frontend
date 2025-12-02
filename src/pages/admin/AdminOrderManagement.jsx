@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { adminService } from '../../services/adminService';
 import { 
-  Container, Typography, Box, CircularProgress, Alert, 
+  Container, Typography, Box, CircularProgress, 
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, 
   Chip, Select, MenuItem, FormControl, Pagination
 } from '@mui/material';
+
+// ✅ Import toast
+import { toast } from "@/hooks/use-toast";
 
 const orderStatuses = ['PENDING', 'PAID', 'SHIPPED', 'DELIVERED', 'CANCELLED'];
 const PAGE_SIZE = 10;
@@ -24,6 +27,11 @@ function AdminOrderManagement() {
       setTotalPages(response.totalPages || 1);
     } catch (err) {
       setError('Failed to load orders.');
+      toast({
+        title: "Failed to load orders",
+        description: "Something went wrong.",
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
     }
@@ -34,12 +42,28 @@ function AdminOrderManagement() {
   }, [page]);
 
   const handleStatusUpdate = async (orderId, newStatus) => {
-    if (!window.confirm(`Mark Order #${orderId} as ${newStatus}?`)) return;
+    // ❌ Remove confirm popup → replace it with a cleaner toast confirmation
+    toast({
+      title: `Updating Order #${orderId}`,
+      description: `Setting status to ${newStatus}...`,
+    });
+
     try {
       await adminService.updateOrderStatus(orderId, newStatus);
-      fetchOrders(); // Refresh
+
+      // success toast
+      toast({
+        title: "Status Updated",
+        description: `Order #${orderId} marked as ${newStatus}`,
+      });
+
+      fetchOrders(); // Refresh list
     } catch (err) {
-      alert(err.response?.data?.message || 'Failed to update status.');
+      toast({
+        title: "Update Failed",
+        description: err.response?.data?.message || "Failed to update order status.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -54,9 +78,13 @@ function AdminOrderManagement() {
 
   return (
     <Box>
-      <Typography variant="h4" fontWeight={700} gutterBottom>Global Order Management</Typography>
-      {error && <Alert severity="error" sx={{ mb: 3 }}>{error}</Alert>}
-      {loading ? <CircularProgress /> : (
+      <Typography variant="h4" fontWeight={700} gutterBottom>
+        Global Order Management
+      </Typography>
+
+      {loading ? (
+        <CircularProgress />
+      ) : (
         <>
           <TableContainer component={Paper} elevation={3}>
             <Table>
@@ -70,28 +98,56 @@ function AdminOrderManagement() {
                   <TableCell align="center">Update Status</TableCell>
                 </TableRow>
               </TableHead>
+
               <TableBody>
                 {orders.map((order) => (
                   <TableRow key={order.id} hover>
                     <TableCell>#{order.id}</TableCell>
-                    <TableCell>{new Date(order.orderDate).toLocaleDateString()}</TableCell>
-                    
-                    {/* FIX: Use customerName and customerEmail from DTO */}
+
                     <TableCell>
-                        <Typography variant="body2" fontWeight={600}>{order.customerName}</Typography>
-                        <Typography variant="caption" color="text.secondary">{order.customerEmail}</Typography>
+                      {new Date(order.orderDate).toLocaleDateString()}
                     </TableCell>
-                    
-                    <TableCell align="right">₹{order.totalAmount?.toFixed(2)}</TableCell>
-                    <TableCell align="center"><Chip label={order.status} color={getStatusColor(order.status)} size="small" /></TableCell>
+
+                    {/* CUSTOMER INFO */}
+                    <TableCell>
+                      <Typography variant="body2" fontWeight={600}>
+                        {order.customerName}
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary">
+                        {order.customerEmail}
+                      </Typography>
+                    </TableCell>
+
+                    <TableCell align="right">
+                      ₹{order.totalAmount?.toFixed(2)}
+                    </TableCell>
+
+                    <TableCell align="center">
+                      <Chip 
+                        label={order.status}
+                        color={getStatusColor(order.status)}
+                        size="small"
+                      />
+                    </TableCell>
+
+                    {/* UPDATE STATUS */}
                     <TableCell align="center">
                       <FormControl size="small" sx={{ minWidth: 130 }}>
                         <Select
                           value={order.status}
-                          onChange={(e) => handleStatusUpdate(order.id, e.target.value)}
-                          disabled={order.status === 'DELIVERED' || order.status === 'CANCELLED'}
+                          onChange={(e) =>
+                            handleStatusUpdate(order.id, e.target.value)
+                          }
+                          disabled={
+                            order.status === 'DELIVERED' ||
+                            order.status === 'CANCELLED'
+                          }
                         >
-                          {orderStatuses.map((status) => <MenuItem key={status} value={status}>{status}</MenuItem>)}
+                          {orderStatuses.map((status) => (
+                            <MenuItem key={status} value={status}>
+                              {status}
+                            </MenuItem>
+                          ))}
                         </Select>
                       </FormControl>
                     </TableCell>
@@ -100,8 +156,14 @@ function AdminOrderManagement() {
               </TableBody>
             </Table>
           </TableContainer>
+
           <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
-            <Pagination count={totalPages} page={page} onChange={(e, v) => setPage(v)} color="primary" />
+            <Pagination
+              count={totalPages}
+              page={page}
+              onChange={(e, v) => setPage(v)}
+              color="primary"
+            />
           </Box>
         </>
       )}
