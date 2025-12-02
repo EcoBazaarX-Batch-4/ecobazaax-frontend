@@ -89,41 +89,44 @@ const Header = () => {
         </Box>
 
         {/* Search Bar */}
-        <Box
-          component="form"
-          onSubmit={handleSearch}
-          sx={{
-            position: "relative",
-            borderRadius: 2,
-            backgroundColor: alpha("#2ECC71", 0.05),
-            "&:hover": { backgroundColor: alpha("#2ECC71", 0.1) },
-            ml: 40,
-            flexGrow: 1,
-            maxWidth: 600,
-            display: { xs: "none", md: "flex" },
-          }}
-        >
-          <Box
-            sx={{
-              padding: "0 16px",
-              height: "100%",
-              display: "flex",
-              alignItems: "center",
-            }}
-          >
-            <SearchIcon sx={{ color: "text.secondary" }} />
-          </Box>
-          <InputBase
-            placeholder="Search eco-friendly products..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            sx={{
-              color: "text.primary",
-              width: "100%",
-              "& .MuiInputBase-input": { padding: "10px 10px 10px 0" },
-            }}
-          />
-        </Box>
+       <Box
+  component="form"
+  onSubmit={handleSearch}
+  sx={{
+    position: "relative",
+    borderRadius: 3,
+    backgroundColor: alpha("#2ECC71", 0.08),
+    "&:hover": { backgroundColor: alpha("#2ECC71", 0.12) },
+    ml: 40,
+    flexGrow: 1,
+    maxWidth: 600,
+    display: { xs: "none", md: "flex" },
+    px: 2,
+  }}
+>
+  <InputBase
+    placeholder="Search eco-friendly products..."
+    value={searchQuery}
+    onChange={(e) => setSearchQuery(e.target.value)}
+    startAdornment={
+      <SearchIcon
+        sx={{
+          mr: 1.5,
+          color: "text.secondary",
+          fontSize: 24,
+        }}
+      />
+    }
+    sx={{
+      width: "100%",
+      py: 1.2,
+      "& .MuiInputBase-input": {
+        padding: 0,
+      },
+    }}
+  />
+</Box>
+
 
         <Box sx={{ flexGrow: 1 }} />
 

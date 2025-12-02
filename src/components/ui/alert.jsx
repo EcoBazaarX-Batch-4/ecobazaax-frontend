@@ -1,50 +1,51 @@
 import * as React from "react";
+import * as ToastPrimitive from "@radix-ui/react-toast";
 import { cva } from "class-variance-authority";
-
 import { cn } from "@/lib/utils";
+import { CheckCircle2, AlertTriangle } from "lucide-react";
 
-const alertVariants = cva(
-  "relative w-full rounded-lg border p-4 [&>svg~*]:pl-7 [&>svg+div]:translate-y-[-3px] [&>svg]:absolute [&>svg]:left-4 [&>svg]:top-4 [&>svg]:text-foreground",
+const toastVariants = cva(
+  "group pointer-events-auto relative flex w-full max-w-xs items-center gap-3 rounded-lg border p-4 shadow-lg transition-all",
   {
     variants: {
       variant: {
-        default: "bg-background text-foreground",
-        destructive:
-          "border-destructive/50 text-destructive dark:border-destructive [&>svg]:text-destructive",
+        default: "bg-white text-foreground border",
+        success: "bg-green-50 border-green-200 text-green-800",
+        destructive: "bg-red-50 border-red-200 text-red-800",
       },
     },
     defaultVariants: {
-      variant: "default",
+      variant: "success",
     },
   }
 );
 
-const Alert = React.forwardRef(({ className, variant, ...props }, ref) => (
-  <div
-    ref={ref}
-    role="alert"
-    className={cn(alertVariants({ variant }), className)}
-    {...props}
-  />
-));
+const Alert = React.forwardRef(
+  ({ className, variant = "success", title, ...props }, ref) => (
+    <ToastPrimitive.Root
+      ref={ref}
+      duration={3000}
+      className={cn(
+        toastVariants({ variant }),
+        "data-[state=open]:animate-slideIn data-[state=closed]:animate-slideOut",
+        className
+      )}
+      {...props}
+    >
+      {variant === "destructive" ? (
+        <AlertTriangle className="h-5 w-5 text-red-600" />
+      ) : (
+        <CheckCircle2 className="h-5 w-5 text-green-600" />
+      )}
+
+      <div className="text-sm font-medium">{title}</div>
+    </ToastPrimitive.Root>
+  )
+);
+
 Alert.displayName = "Alert";
 
-const AlertTitle = React.forwardRef(({ className, ...props }, ref) => (
-  <h5
-    ref={ref}
-    className={cn("mb-1 font-medium leading-none tracking-tight", className)}
-    {...props}
-  />
-));
-AlertTitle.displayName = "AlertTitle";
-
-const AlertDescription = React.forwardRef(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn("text-sm [&_p]:leading-relaxed", className)}
-    {...props}
-  />
-));
-AlertDescription.displayName = "AlertDescription";
+const AlertTitle = () => null;
+const AlertDescription = () => null;
 
 export { Alert, AlertTitle, AlertDescription };

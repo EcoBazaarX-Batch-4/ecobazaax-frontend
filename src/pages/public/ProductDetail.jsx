@@ -7,37 +7,49 @@ import {
   Grid,
   Button,
   Skeleton,
-  Alert,
   Divider,
   Rating,
   TextField,
   Paper,
   Avatar,
-  IconButton
+  IconButton,
 } from "@mui/material";
 import { ShoppingCart, ArrowBack, FavoriteBorder, Favorite } from "@mui/icons-material";
+
 import { productService } from "../../services/productService";
-import { customerService } from "../../services/customerService"; // Ensure this is imported
+import { customerService } from "../../services/customerService";
 import { useCart } from "../../contexts/CartContext";
 import { useAuth } from "../../contexts/AuthContext";
+
 import ProductGrid from "../../components/ProductGrid";
+
+// ✅ Correct toast import
+import { toast } from "@/hooks/use-toast";
 
 const ProductDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { addToCart } = useCart();
   const { isAuthenticated, hasRole } = useAuth();
-  
+
   const [product, setProduct] = useState(null);
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
+
   const [quantity, setQuantity] = useState(1);
   const [reviewText, setReviewText] = useState("");
   const [reviewRating, setReviewRating] = useState(5);
   const [inWishlist, setInWishlist] = useState(false);
+
+  // Cleaner showToast wrapper
+  const showToast = (msg, type = "success") => {
+    toast({
+      title: msg,
+      variant: type === "error" ? "destructive" : "default",
+    });
+  };
 
   useEffect(() => {
     loadProductData();
@@ -47,22 +59,21 @@ const ProductDetail = () => {
   const loadProductData = async () => {
     try {
       setLoading(true);
-      const [productData, relatedData, reviewsData] = await Promise.all([
+
+      const [productData, relatedData, reviewData] = await Promise.all([
         productService.getProductById(id),
         productService.getRelatedProducts(id),
         productService.getProductReviews(id),
       ]);
-      
+
       setProduct(productData);
       setRelatedProducts(relatedData.products || relatedData || []);
-      setReviews(reviewsData.content || reviewsData.reviews || []);
-      
-      // Check wishlist status if available in response or separate call
-      if (productData.inWishlist) {
-        setInWishlist(true);
-      }
+      setReviews(reviewData.content || reviewData.reviews || []);
 
-      productService.trackView(id).catch(e => console.warn("Tracking failed", e));
+      if (productData.inWishlist) setInWishlist(true);
+
+      // tracking (ignore failure)
+      productService.trackView(id).catch(() => {});
     } catch (err) {
       setError("Failed to load product details");
     } finally {
@@ -70,264 +81,246 @@ const ProductDetail = () => {
     }
   };
 
+  // -------------------------
+  // Add to Cart
+  // -------------------------
   const handleAddToCart = async () => {
-    if (!isAuthenticated) {
-      navigate("/login");
-      return;
-    }
+    if (!isAuthenticated) return navigate("/login");
+
     if (!hasRole("ROLE_CUSTOMER")) {
-      alert("Only customers can shop. Please login with a customer account.");
+      showToast("Only customers can shop. Please login with a customer account.", "error");
       return;
     }
 
     try {
-      await addToCart({ productId: parseInt(id), quantity: parseInt(quantity) });
-      alert("Added to cart successfully!");
+      await addToCart({ productId: Number(id), quantity: Number(quantity) });
+      showToast("Added to cart successfully!", "success");
     } catch (err) {
-      alert("Failed to add to cart. Please try again.");
+      showToast("Failed to add product!", "error");
     }
   };
 
+  // -------------------------
+  // Wishlist
+  // -------------------------
   const handleAddToWishlist = async () => {
     if (!isAuthenticated) return navigate("/login");
+
     try {
       await customerService.addToWishlist(id);
       setInWishlist(true);
-      alert("Added to Wishlist!");
+      showToast("Added to Wishlist!", "success");
     } catch (err) {
-      alert("Could not add to wishlist.");
+      showToast("Could not add to wishlist.", "error");
     }
   };
 
+  // -------------------------
+  // Review Submission
+  // -------------------------
   const handleSubmitReview = async () => {
-    if (!isAuthenticated) {
-      navigate("/login");
-      return;
-    }
+    if (!isAuthenticated) return navigate("/login");
+
     try {
-      await productService.addReview(id, { rating: reviewRating, comment: reviewText });
+      await productService.addReview(id, {
+        rating: reviewRating,
+        comment: reviewText,
+      });
+
       setReviewText("");
       setReviewRating(5);
-      loadProductData(); // Reload to see new review
+      loadProductData();
+
+      showToast("Review submitted!", "success");
     } catch (err) {
-      alert("Failed to submit review.");
+      showToast("Failed to submit review.", "error");
     }
   };
 
-  if (loading) return <Container sx={{ py: 6 }}><Skeleton height={500} /></Container>;
-  if (error || !product) return <Container sx={{ py: 6 }}><Alert severity="error">{error || "Product not found"}</Alert></Container>;
+  // -------------------------
+  // Loading State
+  // -------------------------
+  if (loading)
+    return (
+      <Container sx={{ py: 6 }}>
+        <Skeleton height={500} />
+      </Container>
+    );
 
-  // Calculate Carbon Value
+  if (error || !product)
+    return (
+      <Container sx={{ py: 6 }}>
+        <Typography color="error">{error || "Product Not Found"}</Typography>
+      </Container>
+    );
+
   const carbonValue = product.cradleToWarehouseFootprint || product.carbonFootprint;
 
   return (
     <Container maxWidth="lg" sx={{ py: 6 }}>
-      {/* Back Button */}
-      <Button 
-        startIcon={<ArrowBack />} 
-        onClick={() => navigate(-1)} 
-        sx={{ mb: 4, color: "text.secondary", "&:hover": { color: "primary.main" } }}
-      >
+      {/* BACK BUTTON */}
+      <Button startIcon={<ArrowBack />} onClick={() => navigate(-1)} sx={{ mb: 4 }}>
         Back to Shopping
       </Button>
 
       <Grid container spacing={6}>
-        
-        {/* --- LEFT: IMAGE SECTION (Styled like ProductCard) --- */}
+        {/* LEFT IMAGE */}
         <Grid item xs={12} md={6}>
           <Box
             sx={{
               position: "relative",
-              bgcolor: "#f9fafb", // Matches Card
+              bgcolor: "#f9fafb",
               borderRadius: 4,
               border: "1px solid #f0f0f0",
-              overflow: "hidden",
-              height: { xs: "300px", md: "500px" }, // Taller for detail view
+              height: { xs: 300, md: 500 },
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              p: 4
+              p: 4,
             }}
           >
             <Box
               component="img"
-              src={product.imageUrl || "https://via.placeholder.com/600x600?text=Product"}
+              src={product.imageUrl}
               alt={product.name}
-              sx={{
-                maxWidth: "100%",
-                maxHeight: "100%",
-                objectFit: "contain",
-                mixBlendMode: "multiply" // Premium blending effect
-              }}
+              sx={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }}
             />
           </Box>
         </Grid>
 
-        {/* --- RIGHT: DETAILS SECTION --- */}
+        {/* RIGHT DETAILS */}
         <Grid item xs={12} md={6}>
           <Box display="flex" flexDirection="column" height="100%">
-            
-            {/* Category / Brand (Optional) */}
-            <Typography variant="overline" color="text.secondary" letterSpacing={1} mb={1}>
-              {product.category || "Sustainable Goods"}
+            <Typography variant="overline" color="text.secondary">
+              {product.category || "Eco Product"}
             </Typography>
 
-            {/* Name */}
-            <Typography variant="h3" fontWeight={700} gutterBottom sx={{ color: "#1a1a1a", lineHeight: 1.2 }}>
+            <Typography variant="h3" fontWeight={700}>
               {product.name}
             </Typography>
 
-            {/* Price & Rating Row */}
-            <Box display="flex" alignItems="center" gap={2} mb={3}>
-              <Typography variant="h4" color="primary.main" fontWeight={700}>
+            {/* PRICE + RATINGS */}
+            <Box display="flex" alignItems="center" gap={2} mt={2}>
+              <Typography variant="h4" fontWeight={700} color="primary.main">
                 ₹{product.price}
               </Typography>
+
               {product.rating > 0 && (
                 <Box display="flex" alignItems="center" bgcolor="#FFF8E1" px={1} py={0.5} borderRadius={1}>
                   <Rating value={product.rating} readOnly precision={0.5} size="small" />
-                  <Typography variant="body2" fontWeight={600} ml={1} color="#F57F17">
-                    ({product.numReviews || reviews.length} reviews)
-                  </Typography>
+                  <Typography ml={1}>({reviews.length})</Typography>
                 </Box>
               )}
             </Box>
 
-            {/* PROFESSIONAL CARBON TAG (Matches ProductCard) */}
+            {/* CARBON FOOTPRINT */}
             {carbonValue && (
-              <Box mb={3}>
+              <Box mt={2}>
                 <Box
                   sx={{
                     display: "inline-flex",
                     alignItems: "center",
                     px: 1.5,
                     py: 0.75,
-                    borderRadius: "8px",
-                    bgcolor: "#e8f5e9", // Light Green
-                    color: "#2e7d32",   // Dark Green text
+                    borderRadius: 2,
+                    bgcolor: "#e8f5e9",
                     border: "1px solid #c8e6c9",
-                    fontSize: "0.875rem",
-                    fontWeight: 600,
                   }}
                 >
-                  <img src="/logo.png" alt="eco-impact" style={{ fontSize: 18, marginRight: 8, width: 72, height: "auto" }} />
-                  Eco-Impact: {carbonValue} kg CO₂e
+                  <img src="/logo.png" width="40" style={{ marginRight: 8 }} />
+                  Eco Impact: {carbonValue} kg CO₂e
                 </Box>
               </Box>
             )}
 
-            <Divider sx={{ my: 2 }} />
+            <Divider sx={{ my: 3 }} />
 
-            {/* Description */}
-            <Typography variant="body1" color="text.secondary" paragraph sx={{ lineHeight: 1.8, fontSize: "1.05rem" }}>
-              {product.description}
-            </Typography>
+            {/* DESCRIPTION */}
+            <Typography color="text.secondary">{product.description}</Typography>
 
             <Box flexGrow={1} />
 
-            {/* Action Area */}
-            <Box display="flex" gap={2} alignItems="center" mt={4}>
+            {/* ADD TO CART + WISHLIST */}
+            <Box display="flex" gap={2} alignItems="center" mt={3}>
               <TextField
                 type="number"
                 label="Qty"
                 value={quantity}
-                onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-                inputProps={{ min: 1 }}
+                onChange={(e) => setQuantity(Math.max(1, Number(e.target.value)))}
                 sx={{ width: 80 }}
-                size="medium"
               />
-              
+
               <Button
                 variant="contained"
-                size="large"
                 startIcon={<ShoppingCart />}
                 onClick={handleAddToCart}
                 disabled={product.stockQuantity < 1}
-                sx={{ 
-                  flexGrow: 1, 
-                  height: 56, 
-                  fontSize: "1.1rem",
-                  borderRadius: 2,
-                  textTransform: "none"
-                }}
+                sx={{ flexGrow: 1, height: 56, fontSize: "1.1rem" }}
               >
-                {product.stockQuantity < 1 ? "Out of Stock" : "Add to Cart"}
+                Add to Cart
               </Button>
 
-              <IconButton 
-                onClick={handleAddToWishlist} 
-                sx={{ 
-                  height: 56, 
-                  width: 56, 
-                  border: "1px solid #e0e0e0", 
-                  borderRadius: 2,
-                  color: inWishlist ? "error.main" : "text.secondary"
-                }}
-              >
-                {inWishlist ? <Favorite /> : <FavoriteBorder />}
+              <IconButton onClick={handleAddToWishlist} sx={{ height: 56, width: 56 }}>
+                {inWishlist ? <Favorite color="error" /> : <FavoriteBorder />}
               </IconButton>
             </Box>
           </Box>
         </Grid>
       </Grid>
 
-      {/* --- REVIEWS SECTION --- */}
-      <Box mt={8}>
-        <Typography variant="h5" fontWeight={700} gutterBottom mb={3}>
+      {/* REVIEWS */}
+      <Box mt={6}>
+        <Typography variant="h5" fontWeight={700}>
           Customer Reviews
         </Typography>
-        
+
+        {/* WRITE REVIEW */}
         {isAuthenticated && (
-          <Paper variant="outlined" sx={{ p: 3, mb: 4, bgcolor: "#FAFAFA", borderRadius: 3 }}>
-            <Typography variant="h6" gutterBottom fontWeight={600}>Write a Review</Typography>
-            <Box display="flex" alignItems="center" gap={2} mb={2}>
-               <Typography component="legend">Your Rating:</Typography>
-               <Rating value={reviewRating} onChange={(e, value) => setReviewRating(value)} />
+          <Paper sx={{ p: 3, mt: 2 }}>
+            <Typography fontWeight={600}>Write a Review</Typography>
+
+            <Box mt={1}>
+              <Rating value={reviewRating} onChange={(e, v) => setReviewRating(v)} />
             </Box>
+
             <TextField
               fullWidth
               multiline
               rows={3}
-              placeholder="Share your thoughts about this sustainable product..."
               value={reviewText}
               onChange={(e) => setReviewText(e.target.value)}
-              sx={{ mb: 2, bgcolor: "white" }}
+              sx={{ mt: 2 }}
             />
-            <Button variant="contained" onClick={handleSubmitReview} disabled={!reviewText}>
-              Submit Review
+
+            <Button variant="contained" sx={{ mt: 2 }} onClick={handleSubmitReview}>
+              Submit
             </Button>
           </Paper>
         )}
 
-        <Grid container spacing={3}>
-          {reviews.length === 0 ? (
-             <Grid item xs={12}><Typography color="text.secondary">No reviews yet. Be the first!</Typography></Grid>
-          ) : (
-            reviews.map((review, index) => (
-              <Grid item xs={12} md={6} key={index}>
-                <Paper elevation={0} sx={{ p: 3, border: "1px solid #eee", borderRadius: 3 }}>
-                  <Box display="flex" gap={2} mb={1}>
-                    <Avatar sx={{ bgcolor: "primary.light" }}>{review.userName?.charAt(0).toUpperCase()}</Avatar>
-                    <Box>
-                      <Typography variant="subtitle1" fontWeight={700}>{review.userName}</Typography>
-                      <Rating value={review.rating} readOnly size="small" />
-                    </Box>
+        {/* REVIEW LIST */}
+        <Grid container spacing={2} mt={2}>
+          {reviews.map((review, index) => (
+            <Grid item xs={12} md={6} key={index}>
+              <Paper sx={{ p: 3 }}>
+                <Box display="flex" gap={2}>
+                  <Avatar>{review.userName?.charAt(0)}</Avatar>
+                  <Box>
+                    <Typography fontWeight={700}>{review.userName}</Typography>
+                    <Rating value={review.rating} readOnly size="small" />
                   </Box>
-                  <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                    {review.comment}
-                  </Typography>
-                </Paper>
-              </Grid>
-            ))
-          )}
+                </Box>
+                <Typography mt={1}>{review.comment}</Typography>
+              </Paper>
+            </Grid>
+          ))}
         </Grid>
       </Box>
 
-      {/* --- RELATED PRODUCTS --- */}
+      {/* RELATED PRODUCTS */}
       {relatedProducts.length > 0 && (
-        <Box mt={8} mb={4}>
-          <Typography variant="h4" fontWeight={700} gutterBottom mb={4}>
-            You Might Also Like
-          </Typography>
+        <Box mt={8}>
+          <Typography variant="h4">You Might Also Like</Typography>
           <ProductGrid products={relatedProducts} />
         </Box>
       )}

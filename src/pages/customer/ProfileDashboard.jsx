@@ -176,7 +176,7 @@ const ProfileDashboard = () => {
           <StatCard
             title="Eco Points"
             value={insights?.currentEcoPoints || user?.ecoPoints || 0}
-            icon={<img src="/logo.png" alt="eco-points" style={{ width: 72, height: "auto" }} />}
+            icon={<img src="/logo.png" alt="eco-points" style={{ width: 40, height: "auto" }} />}
             color="primary"
           />
         </Grid>

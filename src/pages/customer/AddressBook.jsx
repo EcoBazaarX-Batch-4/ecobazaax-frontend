@@ -92,38 +92,140 @@ const AddressBook = () => {
     <Box>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
         <Typography variant="h4" fontWeight={700}>Address Book</Typography>
-        <Button variant="contained" startIcon={<Add />} onClick={() => handleOpenDialog()}>Add New Address</Button>
       </Box>
 
       {error && <Alert severity="error" sx={{ mb: 3 }}>{error}</Alert>}
+<Grid container spacing={3}>
 
-      <Grid container spacing={3}>
-        {addresses.map((address) => (
-          <Grid item xs={12} md={6} key={address.id}>
-            <Paper sx={{ p: 3, border: address.isDefault ? "2px solid #2ECC71" : "1px solid #eee" }}>
-              <Box display="flex" justifyContent="space-between" alignItems="flex-start" mb={2}>
-                <Box display="flex" gap={1}>
-                  <Home color="primary" />
-                  <Box>
-                    <Typography variant="h6" fontWeight={600}>
-                      {address.label} {address.isDefault && <Typography component="span" variant="caption" color="primary">(Default)</Typography>}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">{address.country}</Typography>
-                  </Box>
-                </Box>
-                <Box>
-                  <IconButton size="small" onClick={() => handleOpenDialog(address)}><Edit /></IconButton>
-                  <IconButton size="small" color="error" onClick={() => handleDelete(address.id)}><Delete /></IconButton>
-                </Box>
-              </Box>
-              <Typography variant="body2">
-                {address.street}<br />
-                {address.city}, {address.state} - {address.postalCode}
-              </Typography>
-            </Paper>
-          </Grid>
-        ))}
-      </Grid>
+  {/* ADDRESS CARDS */}
+{addresses.map((address) => (
+  <Grid item xs={12} sm={6} md={4} key={address.id}>
+    <Paper
+      elevation={0}
+      sx={{
+        p: 3,
+        borderRadius: 2,
+        border: "1px solid #ddd",
+        position: "relative",
+      }}
+    >
+      {/* LEFT PINK STRIP IF DEFAULT */}
+      {address.isDefault && (
+        <Box
+          sx={{
+            position: "absolute",
+            left: 0,
+            top: 0,
+            height: "100%",
+            width: "4px",
+            backgroundColor: "#f36",
+            borderRadius: "2px 0 0 2px",
+          }}
+        />
+      )}
+
+      {/* RADIO + LABEL */}
+      <Box display="flex" alignItems="center" gap={1} mb={1}>
+        <Box
+          sx={{
+            width: 14,
+            height: 14,
+            borderRadius: "50%",
+            border: "2px solid #f36",
+            backgroundColor: address.isDefault ? "#f36" : "transparent",
+          }}
+        />
+        <Typography fontWeight={700}>{address.label}</Typography>
+      </Box>
+
+      {/* FULL ADDRESS TEXT (CITY + STATE ON SEPARATE LINES, MOBILE REMOVED) */}
+      <Typography
+        variant="body2"
+        color="text.secondary"
+        sx={{ whiteSpace: "pre-line" }}
+      >
+        {address.street}
+        {"\n"}
+        {address.city}
+        {"\n"}
+        {address.state} - {address.postalCode}
+      </Typography>
+
+      {/* REMOVE / EDIT */}
+      <Box
+        mt={3}
+        pt={2}
+        sx={{
+          borderTop: "1px solid #eee",
+          display: "flex",
+          justifyContent: "space-between",
+        }}
+      >
+        <Button
+          variant="text"
+          color="error"
+          sx={{ fontWeight: 600 }}
+          onClick={() => handleDelete(address.id)}
+        >
+          REMOVE
+        </Button>
+
+        <Button
+          variant="text"
+          sx={{ fontWeight: 600, color: "#25a55f" }}
+          onClick={() => handleOpenDialog(address)}
+        >
+          EDIT
+        </Button>
+      </Box>
+
+    </Paper>
+  </Grid>
+))}
+
+  {/* ADD NEW ADDRESS CARD ALWAYS AFTER OTHER ADDRESSES */}
+  <Grid item xs={12} sm={6} md={4}>
+    <Paper
+      elevation={0}
+      sx={{
+        height: "100%",
+        p: 4,
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        textAlign: "center",
+        borderRadius: 2,
+        border: "1px dashed #ccc",
+        cursor: "pointer",
+        "&:hover": { backgroundColor: "#fafafa" }
+      }}
+      onClick={() => handleOpenDialog(null)}
+    >
+      <Box>
+        <Box
+          sx={{
+            width: 34,
+            height: 34,
+            borderRadius: "50%",
+            border: "2px solid #ccc",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            margin: "0 auto",
+            fontSize: 20
+          }}
+        >
+          +
+        </Box>
+        <Typography mt={2} fontWeight={600}>
+          Add new address
+        </Typography>
+      </Box>
+    </Paper>
+  </Grid>
+
+</Grid>
+
 
       <Dialog open={dialogOpen} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
         <DialogTitle>{editingAddress ? "Edit Address" : "Add New Address"}</DialogTitle>

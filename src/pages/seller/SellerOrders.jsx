@@ -49,23 +49,77 @@ const SellerOrders = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {loading ? [...Array(3)].map((_, i) => <TableRow key={i}><TableCell colSpan={6}><Skeleton /></TableCell></TableRow>) : 
-             orders.length === 0 ? <TableRow><TableCell colSpan={6} align="center">No orders found</TableCell></TableRow> :
-             orders.map((order) => (
-              <TableRow key={order.id} hover>
-                <TableCell>#{order.id}</TableCell>
-                {/* FIX: Access nested user object safely */}
-                <TableCell>
-                    <Typography variant="body2" fontWeight={600}>{order.customerName}</Typography>
-                    <Typography variant="caption" color="text.secondary">{order.customerEmail}</Typography>
-                  </TableCell>
-                <TableCell>{new Date(order.orderDate).toLocaleDateString()}</TableCell>
-                <TableCell align="right">₹{order.totalAmount.toFixed(2)}</TableCell>
-                <TableCell align="center"><Chip label={order.status} color={getStatusColor(order.status)} size="small" /></TableCell>
-                <TableCell align="center"><Button variant="outlined" size="small" disabled startIcon={<LocalShipping />}>Admin Managed</Button></TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
+  {loading ? (
+    [...Array(3)].map((_, i) => (
+      <TableRow key={i}>
+        <TableCell colSpan={6}>
+          <Skeleton />
+        </TableCell>
+      </TableRow>
+    ))
+  ) : orders.length === 0 ? (
+    <TableRow>
+      <TableCell colSpan={6} align="center">
+        <Typography variant="body2">No orders found</Typography>
+      </TableCell>
+    </TableRow>
+  ) : (
+    orders.map((order) => (
+      <TableRow key={order.id} hover>
+        {/* ID */}
+        <TableCell>
+          <Typography variant="body2">#{order.id}</Typography>
+        </TableCell>
+
+        {/* Customer */}
+        <TableCell>
+          <Typography variant="body2" fontWeight={600}>
+            {order.customerName}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            {order.customerEmail}
+          </Typography>
+        </TableCell>
+
+        {/* Date */}
+        <TableCell>
+          <Typography variant="body2">
+            {new Date(order.orderDate).toLocaleDateString()}
+          </Typography>
+        </TableCell>
+
+        {/* Total */}
+        <TableCell align="right">
+          <Typography variant="body2">
+            ₹{order.totalAmount.toFixed(2)}
+          </Typography>
+        </TableCell>
+
+        {/* Status */}
+        <TableCell align="center">
+          <Chip
+            label={order.status}
+            color={getStatusColor(order.status)}
+            size="small"
+          />
+        </TableCell>
+
+        {/* Info */}
+        <TableCell align="center">
+          <Button
+            variant="outlined"
+            size="small"
+            disabled
+            startIcon={<LocalShipping />}
+          >
+            Admin Managed
+          </Button>
+        </TableCell>
+      </TableRow>
+    ))
+  )}
+</TableBody>
+
         </Table>
       </TableContainer>
     </Box>

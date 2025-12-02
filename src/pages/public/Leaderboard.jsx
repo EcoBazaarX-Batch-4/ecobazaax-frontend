@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import {
   Container, Box, Typography, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Avatar, Chip, Skeleton, Alert,
 } from "@mui/material";
+import { Park ,Spa} from "@mui/icons-material";
+
 import { EmojiEvents } from "@mui/icons-material";
 import { productService } from "../../services/productService";
 
@@ -95,7 +97,14 @@ const Leaderboard = () => {
                     </TableCell>
                     <TableCell align="right">
                       <Box display="flex" alignItems="center" justifyContent="flex-end" gap={0.5}>
-                        <img src="/logo.png" alt="carbon" style={{ color: "success.main", fontSize: 20, width: 72, height: "auto" }} />
+
+<Spa
+  sx={{
+    fontSize: 26,
+    color: "#2ecc71",
+    filter: "drop-shadow(0px 2px 4px rgba(0,0,0,0.2))"
+  }}
+/>
                         {/* FIX: Use 'averageCarbonFootprint' */}
                         <Typography fontWeight={600}>
                           {user.averageCarbonFootprint?.toFixed(2)} kg

@@ -41,6 +41,7 @@ const UserManagement = lazy(() => import("./pages/admin/UserManagement"));
 const SellerApprovals = lazy(() => import("./pages/admin/SellerApprovals"));
 const ConfigHub = lazy(() => import("./pages/admin/ConfigHub"));
 const Reports = lazy(() => import("./pages/admin/Reports"));
+import { Toaster } from "@/components/ui/toaster";
 
 // Protected Route Components
 import { ProtectedRoute, SellerProtectedRoute, AdminProtectedRoute } from "./components/ProtectedRoute";
@@ -103,11 +104,14 @@ const LoadingFallback = () => (
 
 function App() {
   return (
+    
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <AuthProvider>
         <CartProvider>
+          <Toaster />
           <Suspense fallback={<LoadingFallback />}>
+
             <Routes>
               {/* Public Routes */}
               <Route path="/" element={<PublicLayout />}>
@@ -195,6 +199,7 @@ function App() {
               {/* 404 */}
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
+
           </Suspense>
         </CartProvider>
       </AuthProvider>
