@@ -85,20 +85,21 @@ const Home = () => {
         }}
       >
         {/* BACKGROUND IMAGE */}
-        <Box
-          component="img"
-          src="https://thumbs.dreamstime.com/b/green-shopping-cart-filled-eco-friendly-products-surrounded-lush-tropical-foliage-background-363406854.jpg"
-          alt="Eco-friendly shopping"
-          sx={{
-            position: "absolute",
-            inset: 0,
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            filter: "brightness(0.45)",
-            zIndex: 0,
-          }}
-        />
+       <Box
+  component="img"
+  src="/new.png"     // <-- Your public folder image
+  alt="Eco-friendly shopping"
+  sx={{
+    position: "absolute",
+    inset: 0,
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
+    filter: "brightness(0.45)",
+    zIndex: 0,
+  }}
+/>
+
 
         {/* HERO CONTENT */}
         <Container maxWidth="lg" sx={{ position: "relative", zIndex: 2 }}>
