@@ -17,7 +17,11 @@ const Footer = () => {
         <Grid container spacing={4}>
           <Grid item xs={12} sm={4}>
             <Box display="flex" alignItems="center" gap={1} mb={2}>
-              <img src="/logo.png" alt="Eco Bazaar X" style={{ width: 72, height: "auto" }} />
+              <img
+            src="/logo.png"
+            alt="Eco Bazaar X"
+            style={{ width: 52, objectFit: "contain" }}
+          />
               <Typography variant="h6" color="primary" fontWeight={700}>
                 Eco Bazaar X
               </Typography>

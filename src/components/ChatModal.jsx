@@ -104,7 +104,7 @@ const ChatModal = ({ open, onClose }) => {
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
           <Spa sx={{ fontSize: 22 }} />
           <Typography fontWeight={700} fontSize={16}>
-            Eco-Concierge
+            Eco-Assistant
           </Typography>
         </Box>
         <IconButton onClick={onClose} sx={{ color: "white" }}>

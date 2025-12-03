@@ -117,8 +117,8 @@ const Register = () => {
           src="/logo.png"   // ← put your image inside public folder
           alt="Eco Bazaar X"
           style={{
-            width: 32,
-            height: 32,
+            width: 52,
+            height: 60,
             objectFit: "contain",
           }}
         />

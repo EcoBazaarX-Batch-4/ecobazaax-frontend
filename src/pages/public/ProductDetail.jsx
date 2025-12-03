@@ -138,7 +138,7 @@ const ProductDetail = () => {
 
       showToast("Review submitted!");
     } catch (err) {
-      showToast("Failed to submit review.", "error");
+      showToast("You must purchase this product before writing a review.", "error");
     }
   };
 
@@ -164,7 +164,7 @@ const ProductDetail = () => {
         Back to Shopping
       </Button>
 
-      <Grid container spacing={6}>
+      <Grid container spacing={4}>
         {/* LEFT IMAGE */}
         <Grid item xs={12} md={6}>
           <Box
@@ -173,7 +173,7 @@ const ProductDetail = () => {
               bgcolor: "#f9fafb",
               borderRadius: 4,
               border: "1px solid #f0f0f0",
-              height: { xs: 300, md: 500 },
+              height: { xs: 300, md: 450 },
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -196,7 +196,7 @@ const ProductDetail = () => {
               {product.category || "Eco Product"}
             </Typography>
 
-            <Typography variant="h3" fontWeight={700}>
+            <Typography variant="h4" fontWeight={700}>
               {product.name}
             </Typography>
 
