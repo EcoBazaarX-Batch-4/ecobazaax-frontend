@@ -274,7 +274,7 @@ VITE_STRIPE_KEY=your_stripe_public_key_here
 npm run dev
 ```
 
-This starts the Vite dev server at `http://localhost:8080`
+This starts the Vite dev server at `http://localhost:5173`
 
 The development server includes:
 - Fast HMR (Hot Module Replacement)
