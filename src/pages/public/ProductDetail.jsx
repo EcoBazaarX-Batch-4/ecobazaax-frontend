@@ -164,7 +164,7 @@ const ProductDetail = () => {
         Back to Shopping
       </Button>
 
-      <Grid container spacing={4}>
+      <Grid container spacing={2}>
         {/* LEFT IMAGE */}
         <Grid item xs={12} md={6}>
           <Box
@@ -184,7 +184,7 @@ const ProductDetail = () => {
               component="img"
               src={product.imageUrl}
               alt={product.name}
-              sx={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }}
+              sx={{ maxWidth: "100%", maxHeight: "50%", objectFit: "contain" }}
             />
           </Box>
         </Grid>
@@ -236,7 +236,13 @@ const ProductDetail = () => {
 
             <Divider sx={{ my: 3 }} />
 
-            <Typography color="text.secondary">{product.description}</Typography>
+            <Typography
+              color="text.secondary"
+                sx={{ fontSize: "1.15rem", fontWeight: 500, lineHeight: 1.7 }}
+              >
+                {product.description}
+              </Typography>
+
 
             <Box flexGrow={1} />
 
